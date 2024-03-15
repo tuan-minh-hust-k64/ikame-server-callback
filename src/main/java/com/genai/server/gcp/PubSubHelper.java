@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PubSubHelper {
@@ -33,12 +34,13 @@ public class PubSubHelper {
         try {
             // Create a publisher instance with default settings bound to the topic
             publisher = Publisher.newBuilder(topicName)
-//                    .setCredentialsProvider(new CredentialsProvider() {
-//                @Override
-//                public Credentials getCredentials() throws IOException {
-//                    return GoogleCredentials.fromStream(new FileInputStream("src/main/resources/predict-reviews.json"));
-//                }
-//            })
+                    .setCredentialsProvider(new CredentialsProvider() {
+                @Override
+                public Credentials getCredentials() throws IOException {
+                    return GoogleCredentials.fromStream(Objects.requireNonNull(
+                            PubSubHelper.class.getResourceAsStream("/genai_key.json")));
+                }
+            })
                     .build();
 
             ByteString data = ByteString.copyFromUtf8(message);
@@ -65,7 +67,6 @@ public class PubSubHelper {
                         @Override
                         public void onSuccess(String messageId) {
                             // Once published, returns server-assigned message ids (unique within the topic)
-                            System.out.println("Published message ID: " + messageId);
                         }
                     },
                     MoreExecutors.directExecutor());
