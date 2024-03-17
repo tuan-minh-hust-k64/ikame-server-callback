@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.TopicName;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
+@Component
 public class PubSubHelper {
 //    public static void main(String... args) throws Exception {
 //        // TODO(developer): Replace these variables before running the sample.
@@ -26,7 +27,7 @@ public class PubSubHelper {
 //        String topicId = "test-1";
 //
 //    }
-    public static void publishWithErrorHandlerExample(String projectId, String topicId, String message)
+    public void publishWithErrorHandlerExample(String projectId, String topicId, String message)
             throws IOException, InterruptedException {
         TopicName topicName = TopicName.of(projectId, topicId);
         Publisher publisher = null;
@@ -74,7 +75,7 @@ public class PubSubHelper {
             if (publisher != null) {
                 // When finished with the publisher, shutdown to free up resources.
                 publisher.shutdown();
-                publisher.awaitTermination(1, TimeUnit.MINUTES);
+                publisher.awaitTermination(10, TimeUnit.SECONDS);
             }
         }
     }
